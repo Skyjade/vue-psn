@@ -13,7 +13,7 @@
             <el-form :inline="true" :model="filters">
               <span class="demonstration">开始日期</span>
               <el-date-picker
-                      v-model="startDate"
+                      v-model="filters.startDate"
                       align="right"
                       type="date"
                       placeholder="选择日期"
@@ -22,7 +22,7 @@
 
               <span class="demonstration">结束日期</span>
               <el-date-picker
-                      v-model="endDate"
+                      v-model="filters.endDate"
                       align="right"
                       type="date"
                       placeholder="选择日期"
@@ -38,6 +38,40 @@
             </el-form>
           </el-col>
 
+
+        <!--列表页面-->
+        <!--列表-->
+        <el-table :data="statistics" highlight-current-row v-loading="listLoading" @selection-change="selsChange" style="width: 100%;">
+          <el-table-column type="selection" width="55">
+          </el-table-column>
+          <el-table-column type="index" width="60">
+          </el-table-column>
+          <el-table-column prop="date" label="日期" width="120" sortable>
+          </el-table-column>
+          <el-table-column prop="zfb" label="zfb" width="100" :formatter="formatSex" sortable>
+          </el-table-column>
+          <el-table-column prop="wx" label="wx" width="100" sortable>
+          </el-table-column>
+          <el-table-column prop="yhk" label="yhk" width="120" sortable>
+          </el-table-column>
+          <el-table-column prop="total" label="总和" min-width="180" sortable>
+          </el-table-column>
+          <el-table-column label="操作" width="150">
+            <template scope="scope">
+              <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!--工具条-->
+        <el-col :span="24" class="toolbar">
+          <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
+          <el-pagination layout="prev, pager, next"
+                         @size-change="handleSizeChange"
+                         @current-change="handleCurrentChange" :page-size="20" :total="total"
+                         style="float:right;">
+          </el-pagination>
+        </el-col>
       </el-tab-pane>
 
       <el-tab-pane label="角色管理" name="third">
@@ -87,10 +121,12 @@
 <script>
   import { mapGetters } from 'vuex'
   import { mapActions } from 'vuex'
+  import { addStatistics,updStatistics,delStatistics,queryStatisticsList} from '../../api/api';
 
   export default {
       data() {
           return {
+              statistics:[],//后台返回数据
               addForm: {
                   wx: 0,
                   zfb: 0,
@@ -98,6 +134,7 @@
                   date: null,
                   total:''
               },
+              sels: [],//列表选中列
               addLoading: false,
               addFormRules: {
                  date: [
@@ -109,32 +146,31 @@
               startDate:'',
               endDate:'',
               filters: {
-                  name: ''
+                  startDate: '',
+                  endDate: ''
               },
               activeName: 'second'
           };
       },
 
       created(){
-
+         this.queryStatistics();
       },
     computed: {
-          totalPrice:function () {
-              var m=this.addForm
-              return m.wx+m.zfb+m.yhk
-          },
-  	// 使用对象展开运算符将 getters 混入 computed 对象中
-    ...mapGetters([
-      'getCount'
-      // ...
-    ]),
-        now:function () {
-            return Date.now()
-        }
-
+            totalPrice:function () {
+                var m=this.addForm
+                return m.wx+m.zfb+m.yhk
+            },
+            // 使用对象展开运算符将 getters 混入 computed 对象中
+            ...mapGetters([
+                'getCount'
+                // ...
+            ]),
     },
     methods: {
-         
+        selsChange: function (sels) {
+            this.sels = sels;
+        },
     ...mapActions([
       'increment', // 映射 this.increment() 为 this.$store.dispatch('increment')
       'decrement'
@@ -144,6 +180,12 @@
       //})
         handleClick(tab, event) {
             console.log(tab, event);
+        },
+        handleEdit(){
+
+        },
+        handleDel(){
+
         },
         addSubmit(){
             this.$refs.addForm.validate((valid) => {
@@ -166,8 +208,23 @@
 
             });
 
+        },
+        queryStatistics(){
+            //发送请求获取数据
+            let para = {
+                page: this.page,
+                startDate: this.filters.startDate,
+                endDate: this.filters.endDate
+            };
+            this.listLoading = true;
+            //NProgress.start();
+            queryStatisticsList(para).then((res) => {
+                this.total = res.data.total;
+                this.users = res.data.users;
+                this.listLoading = false;
+                //NProgress.done();
+            });
         }
-
     }
   }
 
