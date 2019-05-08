@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 let base = '';
-let basePsn = '';
+let basePsn = 'localhost:9091/psn-server';
 
 //原有接口 用户管理
 export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };
@@ -20,7 +20,7 @@ export const addUser = params => { return axios.get(`${base}/user/add`, { params
 
 //后续添加
 //资产管理
-export const addStatistics = params => { return axios.post(`${basePsn}/assestStatistics/add`, { params: params }); };
-export const updStatistics = params => { return axios.put(`${basePsn}/assestStatistics/add`, { params: params }); };
-export const delStatistics = params => { return axios.delete(`${basePsn}/assestStatistics/add`, { params: params }); };
-export const queryStatisticsList = params => { return axios.post(`${basePsn}/assestStatistics/add`, { params: params }); };
+export const addStatistics = params => { return axios.post(`${basePsn}/assestStatistics`, { params: params }); };
+export const updStatistics = params => { return axios.put(`${basePsn}/assestStatistics`, { params: params }); };
+export const delStatistics = params => { return axios.delete(`${basePsn}/assestStatistics`, { params: params }); };
+export const queryStatisticsList = params => { return axios.post(`${basePsn}/assestStatistics/list`, { params: params }); };

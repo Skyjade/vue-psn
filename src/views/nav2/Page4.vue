@@ -48,7 +48,7 @@
           </el-table-column>
           <el-table-column prop="date" label="日期" width="120" sortable>
           </el-table-column>
-          <el-table-column prop="zfb" label="zfb" width="100" :formatter="formatSex" sortable>
+          <el-table-column prop="zfb" label="zfb" width="100" sortable>
           </el-table-column>
           <el-table-column prop="wx" label="wx" width="100" sortable>
           </el-table-column>
@@ -67,7 +67,6 @@
         <el-col :span="24" class="toolbar">
           <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
           <el-pagination layout="prev, pager, next"
-                         @size-change="handleSizeChange"
                          @current-change="handleCurrentChange" :page-size="20" :total="total"
                          style="float:right;">
           </el-pagination>
@@ -127,6 +126,7 @@
       data() {
           return {
               statistics:[],//后台返回数据
+              total:0,
               addForm: {
                   wx: 0,
                   zfb: 0,
@@ -153,9 +153,6 @@
           };
       },
 
-      created(){
-         this.queryStatistics();
-      },
     computed: {
             totalPrice:function () {
                 var m=this.addForm
@@ -167,9 +164,16 @@
                 // ...
             ]),
     },
+      mounted() {
+          this.queryStatistics();
+      },
     methods: {
         selsChange: function (sels) {
             this.sels = sels;
+        },
+        handleCurrentChange(val) {
+            this.page = val;
+            this.queryStatistics();
         },
     ...mapActions([
       'increment', // 映射 this.increment() 为 this.$store.dispatch('increment')
@@ -220,7 +224,7 @@
             //NProgress.start();
             queryStatisticsList(para).then((res) => {
                 this.total = res.data.total;
-                this.users = res.data.users;
+                this.statistics = res.data.assestStatistics;
                 this.listLoading = false;
                 //NProgress.done();
             });
