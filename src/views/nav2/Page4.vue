@@ -16,8 +16,7 @@
                       v-model="filters.startDate"
                       align="right"
                       type="date"
-                      placeholder="选择日期"
-                      :picker-options="pickerOptions">
+                      placeholder="选择日期">
               </el-date-picker>
 
               <span class="demonstration">结束日期</span>
@@ -25,8 +24,7 @@
                       v-model="filters.endDate"
                       align="right"
                       type="date"
-                      placeholder="选择日期"
-                      :picker-options="pickerOptions">
+                      placeholder="选择日期">
               </el-date-picker>
 
               <el-form-item>
@@ -164,7 +162,7 @@
                 // ...
             ]),
     },
-      mounted() {
+      created() {
           this.queryStatistics();
       },
     methods: {
@@ -216,15 +214,14 @@
         queryStatistics(){
             //发送请求获取数据
             let para = {
-                page: this.page,
                 startDate: this.filters.startDate,
                 endDate: this.filters.endDate
             };
             this.listLoading = true;
             //NProgress.start();
             queryStatisticsList(para).then((res) => {
-                this.total = res.data.total;
-                this.statistics = res.data.assestStatistics;
+                this.total = res.total;
+                this.statistics = res.data;
                 this.listLoading = false;
                 //NProgress.done();
             });

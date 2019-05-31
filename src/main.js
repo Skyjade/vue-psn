@@ -10,13 +10,14 @@ import Vuex from 'vuex'
 //import NProgress from 'nprogress'
 //import 'nprogress/nprogress.css'
 import routes from './routes'
-// import Mock from './mock'
-// Mock.bootstrap();
+import Mock from './mock'
+Mock.bootstrap();
 import 'font-awesome/css/font-awesome.min.css'
 
 import axios from 'axios' //引入axios
+import VueAxios from 'vue-axios'
+Vue.use(VueAxios,axios);
 
-Vue.prototype.$ajax=axios //修改Vue的原型属性
 Vue.use(ElementUI)
 Vue.use(VueRouter)
 Vue.use(Vuex)
