@@ -44,7 +44,7 @@
           </el-table-column>
           <el-table-column type="index" width="60">
           </el-table-column>
-          <el-table-column prop="date" label="日期" width="120" sortable>
+          <el-table-column prop="createTime" label="日期" width="120" sortable>
           </el-table-column>
           <el-table-column prop="zfb" label="zfb" width="100" sortable>
           </el-table-column>
@@ -108,8 +108,38 @@
           <el-button @click="addFormVisible = false">取消</el-button>
           <el-button type="primary" @click.native="addSubmit" :loading="addLoading">提交</el-button>
         </div>
-
       </el-dialog>
+
+
+        <!--编辑界面-->
+        <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
+          <el-form :model="editForm" label-width="80px" :rules="editFormRules" ref="editForm">
+            <el-form-item label="日期" prop="createTime" >
+              <el-input v-model="editForm.createTime" readonly="readonly"/>
+            </el-form-item>
+
+            <el-form-item label="zfb" prop="zfb">
+              <el-input-number :min="0" v-model="editForm.zfb"/>
+            </el-form-item>
+
+            <el-form-item label="wx" prop="wx">
+              <el-input-number  :min="0"  type="text" v-model="editForm.wx" />
+            </el-form-item>
+
+            <el-form-item label="yhk" prop="yhk">
+              <el-input-number  :min="0" type="text" v-model="editForm.yhk"/>
+            </el-form-item>
+
+            <el-form-item label="total">
+              <el-input style="width: 120px" type="text" v-model="editForm.total" readonly="readonly"/>
+            </el-form-item>
+          </el-form>
+          <div slot="footer" class="dialog-footer">
+            <el-button @click.native="editFormVisible = false">取消</el-button>
+            <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+          </div>
+      </el-dialog>
+
     </el-tabs>
 
   </div>
@@ -132,8 +162,16 @@
                   date: null,
                   total:''
               },
+              editForm:{
+                  wx: 0,
+                  zfb: 0,
+                  yhk: 0,
+                  date: null,
+                  total:''
+              },
               sels: [],//列表选中列
               addLoading: false,
+              editLoading:false,
               addFormRules: {
                  date: [
                      //TODO 时间参数校验失败
@@ -147,7 +185,9 @@
                   startDate: '',
                   endDate: ''
               },
-              activeName: 'second'
+              activeName: 'second',
+              editFormVisible:false,
+              editFormRules:{}
           };
       },
 
@@ -183,8 +223,9 @@
         handleClick(tab, event) {
             console.log(tab, event);
         },
-        handleEdit(){
-
+        handleEdit(index, row){
+            this.editFormVisible=true
+            this.editForm = Object.assign({}, row);
         },
         handleDel(){
 
@@ -197,14 +238,19 @@
                             this.addLoading = true;
                             this.$refs['addForm'].resetFields();
                             this.addLoading =false;
-                            //post请求 TODO
-
-                            this.$message({
-                                type: 'success',
-                                message: '添加成功!'
+                            //post请求
+                            let para = Object.assign({}, this.addForm);
+                            addStatistics(para).then((res)=>{
+                                this.addLoading=false
+                                this.$message({
+                                    message: '提交成功',
+                                    type: 'success'
+                                });
+                                this.$refs['addForm'].resetFields();
+                                this.addFormVisible = false;
+                                //this.getUsers();
                             })
-                            this.addFormVisible = false;
-                            //this.getUsers();
+
                     });
                 }
 
