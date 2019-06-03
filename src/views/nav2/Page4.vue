@@ -80,7 +80,7 @@
       <el-dialog title="新增状态" v-model="addFormVisible" :close-on-click-modal="false">
         <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
           <el-form-item label="日期" prop="date">
-            <el-date-picker v-model="addForm.date"
+            <el-date-picker v-model="addForm.createTime"
                             type="date"
                             placeholder="选择日期"
                             format="yyyy 年 MM 月 dd 日"
@@ -159,7 +159,7 @@
                   wx: 0,
                   zfb: 0,
                   yhk: 0,
-                  date: null,
+                  createTime: null,
                   total:''
               },
               editForm:{
@@ -236,19 +236,25 @@
                     this.$confirm('确认提交吗？', '提示', {})
                         .then(() => {
                             this.addLoading = true;
-                            this.$refs['addForm'].resetFields();
-                            this.addLoading =false;
                             //post请求
-                            let para = Object.assign({}, this.addForm);
-                            addStatistics(para).then((res)=>{
-                                this.addLoading=false
-                                this.$message({
-                                    message: '提交成功',
-                                    type: 'success'
-                                });
-                                this.$refs['addForm'].resetFields();
-                                this.addFormVisible = false;
-                                //this.getUsers();
+                            addStatistics(this.addForm).then((res)=>{
+                                if(res.msgCode == 200){
+                                    this.addLoading=false
+                                    this.$message({
+                                        message: '提交成功',
+                                        type: 'success'
+                                    });
+                                    this.addLoading =false;
+                                    this.$refs['addForm'].resetFields();
+                                    this.addFormVisible = false;
+                                    this.queryStatistics();
+                                }else{
+                                    this.$message({
+                                        message:'新增失败',
+                                        type:'error'
+                                    })
+                                }
+
                             })
 
                     });

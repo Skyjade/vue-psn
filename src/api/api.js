@@ -20,7 +20,13 @@ export const addUser = params => { return axios.get(`${base}/user/add`, { params
 
 //后续添加
 //资产管理
-export const addStatistics = params => { return post(`${basePsn}/assestStatistics`, { params: params }).then(res => res.data); };
-export const updStatistics = params => { return put(`${basePsn}/assestStatistics`, { params: params }).then(res => res.data); };
-export const delStatistics = params => { return del(`${basePsn}/assestStatistics`, { params: params }).then(res => res.data); };
-export const queryStatisticsList = params => { return post(`${basePsn}/assestStatistics/list`, { params: params }).then(res => res.data); };
+// export function addStatistics (params, call) {post(`${basePsn}/assestStatistics`,  null, params ,call )}
+// export function updStatistics (params, call) {put(`${basePsn}/assestStatistics`,  null, params ,call )}
+// export function delStatistics (params, call) {del(`${basePsn}/assestStatistics`,  null, params ,call )}
+// export function queryStatisticsList (params, call) {post(`${basePsn}/assestStatistics/list`,  null, params ,call )}
+
+
+export const addStatistics = params => { return post(`${basePsn}/assestStatistics`, params).then(res => res.data); };
+export const updStatistics = params => { return put(`${basePsn}/assestStatistics`, params).then(res => res.data); };
+export const delStatistics = params => { return del(`${basePsn}/assestStatistics`,params ).then(res => res.data); };
+export const queryStatisticsList = params => { return post(`${basePsn}/assestStatistics/list`, params).then(res => res.data); };

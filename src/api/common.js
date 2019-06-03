@@ -4,7 +4,10 @@ export function query(url, data) {
   return request({
     url: url,
     method: 'post',
-    data
+    data,
+    headers:{
+        'Content-Type':'application/json'
+    }
   })
 }
 
@@ -12,7 +15,10 @@ export function post(url, data) {
   return request({
     url: url,
     method: 'post',
-    data
+    data,
+    headers:{
+        'Content-Type':'application/json'
+    }
   })
 }
 
@@ -21,7 +27,10 @@ export function put(url, data) {
     url: url,
     method: 'put',
     params: {},
-    data: data
+    data: data,
+    headers:{
+        'Content-Type':'application/json'
+    }
   })
 }
 
@@ -29,24 +38,13 @@ export function del(url, data) {
   return request({
     url: url,
     method: 'delete',
-    data
+    data,
+    headers:{
+        'Content-Type':'application/json'
+    }
   })
 }
 
-export function queryProtocol(url) {
-  return request({
-    url: url,
-    method: 'post'
-  })
-}
-
-export function getRTURelatedChannel(url) {
-  console.log('==%o', url)
-  return request({
-    url: url,
-    method: 'get'
-  })
-}
 
 export function get(url) {
   console.log('==%o', url)
