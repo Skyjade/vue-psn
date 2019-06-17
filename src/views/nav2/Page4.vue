@@ -79,13 +79,13 @@
       <!--新增界面-->
       <el-dialog title="新增状态" v-model="addFormVisible" :close-on-click-modal="false">
         <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-          <el-form-item label="日期" prop="date">
-            <el-date-picker v-model="addForm.createTime"
-                            type="date"
-                            placeholder="选择日期"
-                            format="yyyy 年 MM 月 dd 日"
-                            value-format="yyyy-MM-dd"/>
-          </el-form-item>
+          <!--<el-form-item label="日期" prop="date">-->
+            <!--<el-date-picker v-model="addForm.createTime"-->
+                            <!--type="date"-->
+                            <!--placeholder="选择日期"-->
+                            <!--format="yyyy 年 MM 月 dd 日"-->
+                            <!--value-format="yyyy-MM-dd"/>-->
+          <!--</el-form-item>-->
 
           <el-form-item label="zfb" prop="zfb">
             <el-input-number :min="0" v-model="addForm.zfb"/>
@@ -131,12 +131,12 @@
             </el-form-item>
 
             <el-form-item label="total">
-              <el-input style="width: 120px" type="text" v-model="editForm.total" readonly="readonly"/>
+              <el-input style="width: 120px" type="text" v-model="editTotalPrice" readonly="readonly"/>
             </el-form-item>
           </el-form>
           <div slot="footer" class="dialog-footer">
             <el-button @click.native="editFormVisible = false">取消</el-button>
-            <el-button type="primary" @click.native="editSubmit" :loading="editLoading">提交</el-button>
+            <el-button type="primary" @click="editSubmit" :loading="editLoading">提交</el-button>
           </div>
       </el-dialog>
 
@@ -148,7 +148,7 @@
 <script>
   import { mapGetters } from 'vuex'
   import { mapActions } from 'vuex'
-  import { addStatistics,updStatistics,delStatistics,queryStatisticsList} from '../../api/api';
+  import { addStatistics,updStatistics,delStatistics,queryStatisticsList, delStatisticsList} from '../../api/api';
 
   export default {
       data() {
@@ -196,6 +196,10 @@
                 var m=this.addForm
                 return m.wx+m.zfb+m.yhk
             },
+            editTotalPrice:function () {
+                var m=this.editForm
+                return m.wx+m.zfb+m.yhk
+            },
             // 使用对象展开运算符将 getters 混入 computed 对象中
             ...mapGetters([
                 'getCount'
@@ -223,13 +227,67 @@
         handleClick(tab, event) {
             console.log(tab, event);
         },
+        //点击编辑
         handleEdit(index, row){
             this.editFormVisible=true
             this.editForm = Object.assign({}, row);
         },
-        handleDel(){
+        //批量删除
+        batchRemove (){
+            var ids = this.sels.map(item => item.id).toString();
+            this.$confirm('确认删除选中记录吗？', '提示', {
+                type: 'warning'
+            }).then(() => {
+                this.listLoading = true;
+                //NProgress.start();
+                let para = { ids: ids };
+                delStatisticsList(para).then((res) => {
+                    this.listLoading = false;
+                    //NProgress.done();
+                    if(res.msgCode==200){
+                        this.$message({
+                            message: '删除成功',
+                            type: 'success'
+                        });
+                    }else{
+                        this.$message({
+                            message: '删除失败',
+                            type: 'error'
+                        });
+                    }
+                    this.queryStatistics();
+                });
+            }).catch(() => {
+
+            });
+        },
+        //点击删除
+        handleDel(index,row){
+            this.$confirm('确认删除吗?', '提示', {
+                type: 'warning'
+            }).then(() => {
+                delStatistics(row.id).then((res)=>{
+                    if(res.msgCode == 200){
+                        this.$message({
+                            type: 'success',
+                            message: '删除成功!'
+                        })
+                        this.queryStatistics();
+                    }else{
+                        this.$message({
+                            type: 'success',
+                            message: '删除失败!'
+                        })
+                    }
+
+                })
+
+            }).catch(() => {
+
+            });
 
         },
+        //添加数据，点击提交
         addSubmit(){
             this.$refs.addForm.validate((valid) => {
                 if (valid) {
@@ -263,6 +321,40 @@
             });
 
         },
+
+        //修改数据，点击提交
+        editSubmit () {
+            this.$refs.editForm.validate((valid) => {
+                if (valid) {
+                    this.$confirm('确认修改吗？', '提示', {})
+                        .then(() => {
+                            this.editLoading = true;
+                            //post请求
+                            updStatistics(this.editForm).then((res)=>{
+                                if(res.msgCode == 200){
+                                    this.$message({
+                                        message: '修改成功',
+                                        type: 'success'
+                                    });
+                                    this.editLoading =false;
+                                    this.$refs['editForm'].resetFields();
+                                    this.editFormVisible = false;
+                                    this.queryStatistics();
+                                }else{
+                                    this.$message({
+                                        message:'修改失败',
+                                        type:'error'
+                                    })
+                                }
+
+                            })
+
+                        });
+                }
+
+            });
+        },
+
         queryStatistics(){
             //发送请求获取数据
             let para = {

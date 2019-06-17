@@ -28,5 +28,6 @@ export const addUser = params => { return axios.get(`${base}/user/add`, { params
 
 export const addStatistics = params => { return post(`${basePsn}/assestStatistics`, params).then(res => res.data); };
 export const updStatistics = params => { return put(`${basePsn}/assestStatistics`, params).then(res => res.data); };
-export const delStatistics = params => { return del(`${basePsn}/assestStatistics`,params ).then(res => res.data); };
+export const delStatistics = params => { return del(`${basePsn}/assestStatistics/`+params,params ).then(res => res.data); };
+export const delStatisticsList = params => { return del(`${basePsn}/assestStatistics/batchRemove`,params ).then(res => res.data); };
 export const queryStatisticsList = params => { return post(`${basePsn}/assestStatistics/list`, params).then(res => res.data); };
