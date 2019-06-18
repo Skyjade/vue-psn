@@ -64,17 +64,10 @@
         <!--工具条-->
         <el-col :span="24" class="toolbar">
           <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
-          <el-pagination
-                  :current-page.sync="currentPage"
-                  :page-size="pageSize"
-                  :page-sizes="[2, 5, 10, 50, 200]"
-                  :total="total"
-                  layout="total, sizes, prev, pager, next, jumper"
-                  @size-change="handleSizeChange"
-                  @current-change="handleCurrentChange"
-                  style="float:right;"
-          />
         </el-col>
+
+        <!--分页组件-->
+        <pagination :pageSize="pageSize" :currentPage="currentPage" :total="total"/>
       </el-tab-pane>
 
       <el-tab-pane label="角色管理" name="third">
@@ -155,7 +148,7 @@
   import { mapGetters } from 'vuex'
   import { mapActions } from 'vuex'
   import { addStatistics,updStatistics,delStatistics,queryStatisticsList, delStatisticsList} from '../../api/api';
-
+  import * as pagination from '../../utils/pagination/pagination'
   export default {
       data() {
           return {
@@ -217,7 +210,10 @@
       created() {
           this.queryStatistics();
       },
-    methods: {
+      components:{
+          pagination
+      },
+      methods: {
         selsChange: function (sels) {
             this.sels = sels;
         },
