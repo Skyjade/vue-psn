@@ -28,7 +28,7 @@
               </el-date-picker>
 
               <el-form-item>
-                <el-button type="primary" v-on:click="get">查询</el-button>
+                <el-button type="primary" v-on:click="queryStatistics">查询</el-button>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="addFormVisible=true">添加当前月数据</el-button>
@@ -64,10 +64,16 @@
         <!--工具条-->
         <el-col :span="24" class="toolbar">
           <el-button type="danger" @click="batchRemove" :disabled="this.sels.length===0">批量删除</el-button>
-          <el-pagination layout="prev, pager, next"
-                         @current-change="handleCurrentChange" :page-size="20" :total="total"
-                         style="float:right;">
-          </el-pagination>
+          <el-pagination
+                  :current-page.sync="currentPage"
+                  :page-size="pageSize"
+                  :page-sizes="[2, 5, 10, 50, 200]"
+                  :total="total"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  style="float:right;"
+          />
         </el-col>
       </el-tab-pane>
 
@@ -153,6 +159,8 @@
   export default {
       data() {
           return {
+              currentPage:1,
+              pageSize:10,
               statistics:[],//后台返回数据
               total:0,
               addForm: {
@@ -214,7 +222,11 @@
             this.sels = sels;
         },
         handleCurrentChange(val) {
-            this.page = val;
+            this.currentPage = val;
+            this.queryStatistics();
+        },
+        handleSizeChange(val){
+            this.pageSize = val;
             this.queryStatistics();
         },
     ...mapActions([
@@ -359,7 +371,9 @@
             //发送请求获取数据
             let para = {
                 startDate: this.filters.startDate,
-                endDate: this.filters.endDate
+                endDate: this.filters.endDate,
+                start:(this.currentPage-1)*this.pageSize,
+                limit:this.pageSize
             };
             this.listLoading = true;
             //NProgress.start();
