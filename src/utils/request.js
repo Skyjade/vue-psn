@@ -3,11 +3,10 @@ import { Message } from 'element-ui'
 // import store from '@/store'
 import { getToken } from '@/utils/auth'
 import Cookies from 'js-cookie'
-
 // create an axios instance
 const service = axios.create({
   // baseURL: process.env.BASE_API, // api 的 base_url
-  baseURL:'http://192.168.15.171:9091',
+  baseURL:'http://192.168.15.36:58080',
   timeout: 5000 // request timeout
 })
 

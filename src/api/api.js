@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { post, del, put } from '../api/common'
 let base = '';
-let basePsn = '/psn-server';
+let basePsn = '/manager';
 
 //原有接口 用户管理
 export const requestLogin = params => { return axios.post(`${base}/login`, params).then(res => res.data); };

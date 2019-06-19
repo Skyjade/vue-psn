@@ -1,3 +1,4 @@
+<!--分页组件，可复用-->
 <template>
     <el-pagination
             :current-page.sync="currentPage"
@@ -13,26 +14,17 @@
 
 <script>
     export default {
-        name: "pagination",
-        props :{
-            pageSize: {
-                type: Number,
-                required: true
-            },
-            total: {
-                type: Number,
-                required: true
-            },
-            currentPage: {
-                type: Number,
-                required: true
-            }
+        props: ['total'],
+        data () {
+            return {
+                currentPage:1,
+                pageSize:10
+            };
         },
         methods :{
             handleCurrentChange(val) {
                 this.currentPage = val;
-                this.$emit('pagechanged')
-                //this.queryStatistics();
+                // this.queryStatistics();
             },
             handleSizeChange(val){
                 this.pageSize = val;

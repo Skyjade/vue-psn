@@ -67,7 +67,7 @@
         </el-col>
 
         <!--分页组件-->
-        <pagination :pageSize="pageSize" :currentPage="currentPage" :total="total"/>
+        <pagination ref="pagination" :total="total"/>
       </el-tab-pane>
 
       <el-tab-pane label="角色管理" name="third">
@@ -78,13 +78,6 @@
       <!--新增界面-->
       <el-dialog title="新增状态" v-model="addFormVisible" :close-on-click-modal="false">
         <el-form :model="addForm" label-width="80px" :rules="addFormRules" ref="addForm">
-          <!--<el-form-item label="日期" prop="date">-->
-            <!--<el-date-picker v-model="addForm.createTime"-->
-                            <!--type="date"-->
-                            <!--placeholder="选择日期"-->
-                            <!--format="yyyy 年 MM 月 dd 日"-->
-                            <!--value-format="yyyy-MM-dd"/>-->
-          <!--</el-form-item>-->
 
           <el-form-item label="zfb" prop="zfb">
             <el-input-number :min="0" v-model="addForm.zfb"/>
@@ -148,10 +141,11 @@
   import { mapGetters } from 'vuex'
   import { mapActions } from 'vuex'
   import { addStatistics,updStatistics,delStatistics,queryStatisticsList, delStatisticsList} from '../../api/api';
-  import * as pagination from '../../utils/pagination/pagination'
+  import  pagination from '../../utils/pagination/pagination'
   export default {
       data() {
           return {
+              listLoading:true,
               currentPage:1,
               pageSize:10,
               statistics:[],//后台返回数据
@@ -217,14 +211,14 @@
         selsChange: function (sels) {
             this.sels = sels;
         },
-        handleCurrentChange(val) {
-            this.currentPage = val;
-            this.queryStatistics();
-        },
-        handleSizeChange(val){
-            this.pageSize = val;
-            this.queryStatistics();
-        },
+        // handleCurrentChange(val) {
+        //     this.currentPage = val;
+        //     this.queryStatistics();
+        // },
+        // handleSizeChange(val){
+        //     this.pageSize = val;
+        //     this.queryStatistics();
+        // },
     ...mapActions([
       'increment', // 映射 this.increment() 为 this.$store.dispatch('increment')
       'decrement'
