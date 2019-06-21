@@ -28,7 +28,7 @@
               </el-date-picker>
 
               <el-form-item>
-                <el-button type="primary" v-on:click="queryStatistics">查询</el-button>
+                <el-button type="primary" @click="queryStatistics(1)">查询</el-button>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="addFormVisible=true">添加当前月数据</el-button>
@@ -67,7 +67,7 @@
         </el-col>
 
         <!--分页组件-->
-        <pagination ref="pagination" :total="total"/>
+        <pagination ref="pagination" :total="total" @queryData="queryStatistics"/>
       </el-tab-pane>
 
       <el-tab-pane label="角色管理" name="third">
@@ -146,8 +146,6 @@
       data() {
           return {
               listLoading:true,
-              currentPage:1,
-              pageSize:10,
               statistics:[],//后台返回数据
               total:0,
               addForm: {
@@ -201,7 +199,7 @@
                 // ...
             ]),
     },
-      created() {
+      mounted() {
           this.queryStatistics();
       },
       components:{
@@ -216,7 +214,7 @@
         //     this.queryStatistics();
         // },
         // handleSizeChange(val){
-        //     this.pageSize = val;
+        //     //this.pageSize = val;
         //     this.queryStatistics();
         // },
     ...mapActions([
@@ -356,15 +354,11 @@
 
             });
         },
-
         queryStatistics(){
             //发送请求获取数据
-            let para = {
-                startDate: this.filters.startDate,
-                endDate: this.filters.endDate,
-                start:(this.currentPage-1)*this.pageSize,
-                limit:this.pageSize
-            };
+            var para=this.$refs['pagination'].getPageParam;
+            para.startDate= this.filters.startDate,
+            para.endDate= this.filters.endDate,
             this.listLoading = true;
             //NProgress.start();
             queryStatisticsList(para).then((res) => {

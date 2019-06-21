@@ -21,14 +21,24 @@
                 pageSize:10
             };
         },
+        computed :{
+            getPageParam(){
+                var para = {
+                    start:(this.currentPage-1)*this.pageSize,
+                        limit:this.pageSize
+                }
+                return para;
+            }
+        },
         methods :{
+
             handleCurrentChange(val) {
                 this.currentPage = val;
-                // this.queryStatistics();
+                this.$emit('queryData',this.getPageParam);
             },
             handleSizeChange(val){
                 this.pageSize = val;
-                //this.queryStatistics();
+                this.$emit('queryData',this.getPageParam);
             }
         }
     }
