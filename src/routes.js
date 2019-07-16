@@ -9,6 +9,7 @@ import Page4 from './views/nav2/Page4.vue'
 import Page5 from './views/nav2/Page5.vue'
 import Page6 from './views/nav3/Page6.vue'
 import Page7 from './views/nav4/Page7.vue'
+import Page8 from './views/nav5/Page8.vue'
 import echarts from './views/charts/echarts.vue'
 
 let routes = [
@@ -55,7 +56,7 @@ let routes = [
         iconCls: 'fa fa-address-card',
         leaf: true,//只有一个节点
         children: [
-            { path: '/page6', component: Page6, name: '收藏夹管理' }
+            { path: '/page6', component: Page6, name: 'SCADA数据管理' }
         ]
     },
     {
@@ -66,6 +67,16 @@ let routes = [
         leaf: true,//只有一个节点
         children: [
             { path: '/page7', component: Page7, name: '权限中心' }
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '',
+        iconCls: 'fa fa-address-card',
+        leaf: true,//只有一个节点
+        children: [
+            { path: '/page8', component: Page8, name: 'WIZ' }
         ]
     },
     {

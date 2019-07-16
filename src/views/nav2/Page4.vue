@@ -120,7 +120,7 @@
         </el-col>
 
         <!--分页组件-->
-        <pagination ref="pagination" :total="total" @queryData="queryStatistics"/>
+        <pagination  :total="total" @queryData="queryStatistics"/>
       </el-tab-pane>
 
       <el-tab-pane label="预留1" name="third">
@@ -194,7 +194,7 @@
                 // ...
             ]),
     },
-      mounted() {
+      created() {
           this.queryStatistics();
       },
       components:{
